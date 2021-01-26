@@ -13,11 +13,15 @@ export class GroupAccess {
     private readonly groupsTable = process.env.GROUPS_TABLE) {
   }
 
-  async getAllGroups(): Promise<Group[]> {
-    console.log('Getting all groups')
+  async getGroups(userId: string): Promise<Group[]> {
+    console.log('Getting groups')
 
-    const result = await this.docClient.scan({
-      TableName: this.groupsTable
+    const result = await this.docClient.query({
+      TableName: this.groupsTable,
+      KeyConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues: {
+        ':userId': userId
+      }
     }).promise()
 
     const items = result.Items
@@ -31,6 +35,32 @@ export class GroupAccess {
     }).promise()
 
     return group
+  }
+
+  async groupExists(userId: string, groupId: string): Promise<boolean> {
+    const params = {
+      TableName: this.groupsTable,
+      Key: {
+        id: groupId,
+        userId: userId
+      }
+    }
+    const result = await this.docClient.get(params).promise()
+
+    return !!result.Item
+  }
+
+  async getGroup(userId: string, groupId: string): Promise<Group> {
+    const params = {
+      TableName: this.groupsTable,
+      Key: {
+        id: groupId,
+        userId: userId
+      }
+    }
+    const result = await this.docClient.get(params).promise()
+
+    return result.Item as Group
   }
 }
 

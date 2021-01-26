@@ -7,8 +7,9 @@ import { getUserId } from '../auth/utils'
 
 const groupAccess = new GroupAccess()
 
-export async function getAllGroups(): Promise<Group[]> {
-  return groupAccess.getAllGroups()
+export async function getGroups(jwtToken: string): Promise<Group[]> {
+  const userId = getUserId(jwtToken)
+  return groupAccess.getGroups(userId)
 }
 
 export async function createGroup(
@@ -26,4 +27,26 @@ export async function createGroup(
     description: createGroupRequest.description,
     timestamp: new Date().toISOString()
   })
+}
+
+export async function groupExists (
+  groupId: string,
+  jwtToken: string
+): Promise<boolean> {
+  const userId = getUserId(jwtToken)
+  return await groupAccess.groupExists(
+    userId,
+    groupId
+  )
+}
+
+export async function getGroup (
+  groupId: string,
+  jwtToken: string
+): Promise<Group> {
+  const userId = getUserId(jwtToken)
+  return await groupAccess.getGroup(
+    userId,
+    groupId
+  )
 }

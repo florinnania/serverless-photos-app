@@ -1,18 +1,24 @@
 import 'source-map-support/register'
-import { getAllGroups } from '../../businessLogic/groups';
+import { getGroups } from '../../businessLogic/groups'
 
-import * as express from 'express'
-import * as awsServerlessExpress from 'aws-serverless-express'
+import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-const app = express()
+export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('Caller event', event)
+  const authorization = event.headers.Authorization
+  const split = authorization.split(' ')
+  const jwtToken = split[1]
 
-app.get('/groups', async (_req, res) => {
-  const groups = await getAllGroups()
+  const groups = await getGroups(jwtToken);
 
-  res.json({
-    items: groups
-  })
-})
-
-const server = awsServerlessExpress.createServer(app)
-exports.handler = (event, context) => { awsServerlessExpress.proxy(server, event, context) }
+  return {
+    statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: JSON.stringify({
+        items: groups,
+    }),
+  }
+}

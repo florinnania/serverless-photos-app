@@ -1,20 +1,17 @@
 import 'source-map-support/register'
-import { getImages } from '../../businessLogic/images'
-import { groupExists } from '../../businessLogic/groups'
-
+import { getGroup } from '../../businessLogic/groups'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
   console.log('Caller event', event)
   const authorization = event.headers.Authorization
   const split = authorization.split(' ')
   const jwtToken = split[1]
   const groupId = event.pathParameters.groupId
-  const validGroupId = await groupExists(groupId, jwtToken)
+  const group = await getGroup(groupId, jwtToken)
 
-  if (!validGroupId) {
+  if (!group) {
     return {
       statusCode: 404,
       headers: {
@@ -27,7 +24,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
   }
 
-  const images = await getImages(groupId)
+
 
   return {
     statusCode: 200,
@@ -36,7 +33,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      items: images
+      group
     })
   }
 }

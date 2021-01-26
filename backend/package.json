@@ -1,7 +1,7 @@
 {
-  "name": "serverless-udagram-app",
+  "name": "serverless-photos-app",
   "version": "1.0.0",
-  "description": "Serverless images sharing application",
+  "description": "Serverless photos sharing application",
   "main": "handler.js",
   "scripts": {
     "test": "jest"
@@ -38,6 +38,6 @@
     "typescript": "^3.5.3",
     "webpack": "^4.35.3"
   },
-  "author": "Ivan Mushketyk",
+  "author": "Florin Nania",
   "license": "MIT"
 }

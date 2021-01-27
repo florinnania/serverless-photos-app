@@ -2,13 +2,33 @@ import { GroupModel } from '../types/GroupModel'
 import { apiEndpoint } from '../config'
 import { GroupUploadInfo } from '../types/GroupUploadInfo'
 
-export async function getGroups(): Promise<GroupModel[]> {
+export async function getGroups(idToken: string): Promise<GroupModel[]> {
   console.log('Fetching groups')
 
-  const response = await fetch(`${apiEndpoint}/groups`)
+  const response = await fetch(`${apiEndpoint}/groups`,{
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    },
+  })
   const result = await response.json()
 
   return result.items
+}
+
+export async function getGroup(groupId: string, idToken: string): Promise<GroupModel> {
+  console.log('Fetching group')
+
+  const response = await fetch(`${apiEndpoint}/groups/${groupId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    },
+  })
+  const result = await response.json()
+  console.log(JSON.stringify(result))
+
+  return result.group
 }
 
 export async function createGroup(

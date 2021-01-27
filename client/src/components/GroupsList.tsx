@@ -4,9 +4,11 @@ import { Group } from './Group'
 import { getGroups } from '../api/groups-api'
 import { Card, Button, Divider } from 'semantic-ui-react'
 import { History } from 'history'
+import Auth from '../auth/Auth'
 
 interface GroupsListProps {
   history: History
+  auth: Auth
 }
 
 interface GroupsListState {
@@ -24,7 +26,7 @@ export class GroupsList extends React.PureComponent<GroupsListProps, GroupsListS
 
   async componentDidMount() {
     try {
-      const groups = await getGroups()
+      const groups = await getGroups(this.props.auth.getIdToken())
       this.setState({
         groups
       })
@@ -36,15 +38,15 @@ export class GroupsList extends React.PureComponent<GroupsListProps, GroupsListS
   render() {
     return (
       <div>
-        <h1>Groups</h1>
+        <h1>Albums</h1>
 
         <Button
           primary
-          size="huge"
+          size="big"
           className="add-button"
           onClick={this.handleCreateGroup}
         >
-          Create new group
+          Create new album
         </Button>
 
         <Divider clearing />

@@ -1,12 +1,15 @@
 import * as React from 'react'
 import { ImageModel } from '../types/ImageModel'
 import { getImages } from '../api/images-api'
+import { getGroup } from '../api/groups-api'
 import { Card, Divider, Button } from 'semantic-ui-react'
 import { UdagramImage } from './UdagramImage'
 import { History } from 'history'
+import Auth from '../auth/Auth'
 
 interface ImagesListProps {
   history: History
+  auth: Auth
   match: {
     params: {
       groupId: string
@@ -16,6 +19,7 @@ interface ImagesListProps {
 
 interface ImagesListState {
   images: ImageModel[]
+  groupName: string
 }
 
 export class ImagesList extends React.PureComponent<
@@ -23,7 +27,8 @@ export class ImagesList extends React.PureComponent<
   ImagesListState
 > {
   state: ImagesListState = {
-    images: []
+    images: [],
+    groupName: ''
   }
 
   handleCreateImage = () => {
@@ -32,9 +37,11 @@ export class ImagesList extends React.PureComponent<
 
   async componentDidMount() {
     try {
-      const images = await getImages(this.props.match.params.groupId)
+      const group = await getGroup(this.props.match.params.groupId, this.props.auth.getIdToken())
+      const images = await getImages(this.props.match.params.groupId, this.props.auth.getIdToken())
       this.setState({
-        images
+        images,
+        groupName: group.name
       })
     } catch (e) {
       alert(`Failed to fetch images for group : ${e.message}`)

@@ -8,14 +8,13 @@ import { CreateImage } from './components/CreateImage'
 import { CreateGroup } from './components/CreateGroup'
 import Auth from './auth/Auth'
 
-export interface AppProps {}
-
 export interface AppProps {
   auth: Auth
   history: any
 }
 
-export interface AppState {}
+export interface AppState {
+}
 
 export default class App extends Component<AppProps, AppState> {
   constructor(props: AppProps) {
@@ -42,7 +41,7 @@ export default class App extends Component<AppProps, AppState> {
               <Grid.Column width={16}>
                 <Router history={this.props.history}>
                   {this.generateMenu()}
-
+                  
                   {this.generateCurrentPage()}
                 </Router>
               </Grid.Column>
@@ -56,8 +55,8 @@ export default class App extends Component<AppProps, AppState> {
   generateMenu() {
     return (
       <Menu>
-        <Menu.Item name="home">
-          <Link to="/">Home</Link>
+        <Menu.Item name="my albums">
+          <Link to="/">My Albums</Link>
         </Menu.Item>
 
         <Menu.Menu position="right">{this.logInLogOutButton()}</Menu.Menu>
@@ -82,6 +81,14 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   generateCurrentPage() {
+    if (!this.props.auth.isAuthenticated()) {
+      return (
+        <div>
+          <h1>Welcome to the home of your memories</h1>
+          <h2>Please login to see and manage your photo albums</h2>
+        </div>
+      )
+    }
     return (
       <Switch>
         <Route
@@ -92,8 +99,13 @@ export default class App extends Component<AppProps, AppState> {
           }}
         />
 
-        <Route path="/images/:groupId" exact component={ImagesList} />
-
+        <Route path="/images/:groupId" 
+          exact 
+          render={props => {
+            return <ImagesList {...props} auth={this.props.auth} />
+          }} 
+        />
+      
         <Route
           path="/images/:groupId/create"
           exact
@@ -102,7 +114,10 @@ export default class App extends Component<AppProps, AppState> {
           }}
         />
 
-        <Route path="/" exact component={GroupsList} />
+        <Route path="/" exact           
+          render={props => {
+            return <GroupsList {...props} auth={this.props.auth} />
+          }} />
 
         <Route component={NotFound} />
       </Switch>

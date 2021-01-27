@@ -36,6 +36,7 @@ export class ImagesAccess {
   }
 
   async getImages(groupId: string): Promise<Image[]> {
+    console.log(this.imageIdIndex)
     const result = await this.docClient.query({
       TableName: this.imagesTable,
       KeyConditionExpression: 'groupId = :groupId',

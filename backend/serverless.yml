@@ -130,7 +130,6 @@ functions:
     events:
       - http:
           method: post
-          authorizer: RS256Auth
           path: groups/{groupId}/images
           cors: true
           authorizer: Auth

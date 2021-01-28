@@ -51,11 +51,11 @@ export class ImagesList extends React.PureComponent<
   render() {
     return (
       <div>
-        <h1>Images</h1>
+        <h1>{this.state.groupName}</h1>
 
         <Button
           primary
-          size="huge"
+          size="big"
           className="add-button"
           onClick={this.handleCreateImage}
         >
@@ -64,7 +64,7 @@ export class ImagesList extends React.PureComponent<
 
         <Divider clearing />
 
-        <Card.Group>
+        <Card.Group itemsPerRow={3}>
           {this.state.images.map(image => {
             return <UdagramImage key={image.imageId} image={image} />
           })}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { GroupsList } from './components/GroupsList'
 import { Router, Link, Route, Switch } from 'react-router-dom'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 import { ImagesList } from './components/ImagesList'
 import { NotFound } from './components/NotFound'
 import { CreateImage } from './components/CreateImage'
@@ -40,8 +40,6 @@ export default class App extends Component<AppProps, AppState> {
             <Grid.Row>
               <Grid.Column width={16}>
                 <Router history={this.props.history}>
-                  {this.generateMenu()}
-                  
                   {this.generateCurrentPage()}
                 </Router>
               </Grid.Column>
@@ -84,43 +82,62 @@ export default class App extends Component<AppProps, AppState> {
     if (!this.props.auth.isAuthenticated()) {
       return (
         <div>
-          <h1>Welcome to the home of your memories</h1>
-          <h2>Please login to see and manage your photo albums</h2>
+          <Segment style={{ padding: '18em 0em' }} vertical>
+            <Header as='h1' textAlign='center'>Welcome to the home of your memories</Header>
+            <Grid>
+              <Grid.Column textAlign="center">
+                <Button
+                    primary
+                    size="huge"
+                    className="add-button"
+                    onClick={this.handleLogin}
+                  >
+                    Go to photo albums
+                </Button>
+              </Grid.Column>
+            </Grid>
+            
+          </Segment>
         </div>
       )
     }
     return (
-      <Switch>
-        <Route
-          path="/groups/create"
-          exact
-          render={props => {
-            return <CreateGroup {...props} auth={this.props.auth} />
-          }}
-        />
+      <div>
 
-        <Route path="/images/:groupId" 
-          exact 
-          render={props => {
-            return <ImagesList {...props} auth={this.props.auth} />
-          }} 
-        />
-      
-        <Route
-          path="/images/:groupId/create"
-          exact
-          render={props => {
-            return <CreateImage {...props} auth={this.props.auth} />
-          }}
-        />
+        {this.generateMenu()}
 
-        <Route path="/" exact           
-          render={props => {
-            return <GroupsList {...props} auth={this.props.auth} />
-          }} />
+        <Switch>
+          <Route
+            path="/groups/create"
+            exact
+            render={props => {
+              return <CreateGroup {...props} auth={this.props.auth} />
+            }}
+          />
 
-        <Route component={NotFound} />
-      </Switch>
+          <Route path="/images/:groupId" 
+            exact 
+            render={props => {
+              return <ImagesList {...props} auth={this.props.auth} />
+            }} 
+          />
+        
+          <Route
+            path="/images/:groupId/create"
+            exact
+            render={props => {
+              return <CreateImage {...props} auth={this.props.auth} />
+            }}
+          />
+
+          <Route path="/" exact           
+            render={props => {
+              return <GroupsList {...props} auth={this.props.auth} />
+            }} />
+
+          <Route component={NotFound} />
+        </Switch>
+      </div>
     )
   }
 }

@@ -36,3 +36,11 @@ export async function getImages(groupId: string): Promise<Image[]> {
     return imagesAccess.getImages(groupId)
 }
 
+export async function getImage(imageId: string): Promise<Image> {
+  return imagesAccess.getImage(imageId)
+}
+
+export async function deleteImage(image: Image) {
+  return imagesAccess.deleteImage(image)
+}
+

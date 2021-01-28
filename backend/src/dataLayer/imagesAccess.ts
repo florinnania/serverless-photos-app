@@ -47,6 +47,31 @@ export class ImagesAccess {
     const items = result.Items
     return items as Image[]
   }
+
+  async getImage(imageId: string): Promise<Image> {
+    const result = await this.docClient.query({
+        TableName : this.imagesTable,
+        IndexName : this.imageIdIndex,
+        KeyConditionExpression: 'imageId = :imageId',
+        ExpressionAttributeValues: {
+            ':imageId': imageId
+        }
+    }).promise()
+    if (result.Count !== 0) {
+      return result.Items[0] as Image
+    }
+  }
+
+  async deleteImage(image: Image) {
+    const params = {
+      TableName : this.imagesTable,
+      Key: {
+        groupId: image.groupId,
+        timestamp: image.timestamp
+      }
+    }
+    await this.docClient.delete(params).promise()
+  }
 }
 
 function createDynamoDBClient() {

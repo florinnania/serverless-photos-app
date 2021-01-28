@@ -45,3 +45,15 @@ export async function uploadFile(uploadUrl: string, file: Buffer): Promise<void>
     body: file
   })
 }
+
+export async function deleteImage(imageId: string, idToken: string): Promise<void> {
+  console.log('Deleting image')
+
+  await fetch(`${apiEndpoint}/images/${imageId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    },
+  })
+}
